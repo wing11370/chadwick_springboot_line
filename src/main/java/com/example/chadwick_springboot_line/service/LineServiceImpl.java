@@ -42,4 +42,28 @@ public class LineServiceImpl implements LineService {
         }
         return "saveMessage";
     }
+
+    @Override
+    public String sendMessage(String requestBodyString) throws Exception {
+
+        JSONObject requestBody = new JSONObject(requestBodyString);
+
+        String message = requestBody.getString("message");
+
+        String messageString = "{\"type\": \"text\"," +
+                "\"text\": \"" + message + "\"}";
+
+        lineApi.setUserid(requestBody.getString("userid"));
+        lineApi.setMessageString(messageString);
+
+        try {
+            HttpResponse<String> response = lineApi.multicast();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        return "sendMessage";
+    }
+
+
+
 }
