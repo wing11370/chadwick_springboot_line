@@ -10,4 +10,6 @@ public interface LineService {
 
     String sendMessage(String body) throws Exception;
 
+    List<String> getMessageList(String userid) throws Exception;
+
 }

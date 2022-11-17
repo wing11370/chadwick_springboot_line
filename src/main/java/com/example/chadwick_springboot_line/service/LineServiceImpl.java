@@ -64,6 +64,32 @@ public class LineServiceImpl implements LineService {
         return "sendMessage";
     }
 
+    @Override
+    public List<String> getMessageList(String userid) throws Exception {
 
+        MongoClient mongoClient = mongoDB.createConnection();
+        List<String> list = new ArrayList();
+        try (mongoClient) {
+            MongoDatabase database = mongoClient.getDatabase("line");
+            Bson filter = eq("events.source.userId", userid);
+            Bson project = new Document("events.source.userId", true)
+                    .append("events.message.text", true)
+                    .append("events.timestamp", true);
+
+            MongoCollection<Document> collection = database.getCollection("messageLog");
+            MongoCursor<Document> results = collection.find(filter).projection(project).iterator();
+
+            while (results.hasNext()) {
+                String jsonResult = results.next().toJson();
+                list.add(jsonResult);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            mongoClient.close();
+        }
+
+        return !list.isEmpty() ? list : null;
+    }
 
 }
