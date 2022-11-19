@@ -27,4 +27,8 @@ public class LineController {
         return lineService.sendMessage(requestBodyString);
     }
 
+    @GetMapping("/message/{userid}")
+    public List<String> getMessageList(@PathVariable String userid) throws Exception {
+        return lineService.getMessageList(userid);
+    }
 }
